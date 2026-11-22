@@ -47,5 +47,5 @@ uv run python scripts/migrate_outputs_to_english.py --apply
 menys l'últim, que es reserva per calibrar els intervals, i desa a `operational/` els models
 (LightGBM en text i Ridge en joblib), el `manifest.json` (variables, ajustos del CQR, llindar,
 anys i versions de les llibreries) i les importàncies. L'aplicatiu
-[llobregat-operatiu](https://github.com/joangordo/llobregat-operatiu) carrega aquests fitxers
+[llobregat-flood-forecast-live](https://github.com/joangordo/llobregat-flood-forecast-live) carrega aquests fitxers
 amb `llobregat.operational.OperationalModel`.

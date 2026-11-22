@@ -285,6 +285,8 @@ def fig_hydrograph(
     horizons=(1, 6, 12, 24),
 ) -> None:
     plt = _plt()
+    import matplotlib.dates as mdates
+
     obs = observed_series(pred)
     a, b = peak_time - pd.Timedelta(days=2), peak_time + pd.Timedelta(days=2)
     hs = [h for h in horizons if h in set(pred["horizon_h"])]
@@ -321,7 +323,11 @@ def fig_hydrograph(
         ax.plot(t, get["central"], color=COLORS["central"], lw=2, label="Forecast")
         ax.axhline(threshold, color=INK2, lw=1, ls="--")
         ax.set_title(f"+{h:g} h", loc="left")
-        ax.tick_params(axis="x", rotation=30)
+        # A label every other day ("13 Sep") and a minor tick every day: readable in 4 panels
+        ax.xaxis.set_major_locator(mdates.DayLocator(interval=2, tz="UTC"))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%d %b", tz="UTC"))
+        ax.xaxis.set_minor_locator(mdates.DayLocator(tz="UTC"))
+        ax.tick_params(axis="x", rotation=0, labelsize=8)
         _style(ax)
     axes[0].set_ylabel("Flow (m³/s)")
     axes[0].text(t[0], threshold, " warning threshold", va="bottom", fontsize=8, color=INK2)
@@ -336,7 +342,6 @@ def fig_hydrograph(
         bbox_to_anchor=(0.5, -0.12),
     )
     fig.suptitle(title, x=0.01, y=1.01, ha="left", fontweight="bold")
-    fig.autofmt_xdate()
     fig.savefig(path)
     plt.close(fig)
 
@@ -454,7 +459,7 @@ def fig_lead(lt: pd.DataFrame, path: Path) -> None:
     ax.set_xlabel("Warning issued at least x hours before the threshold crossing")
     ax.set_ylabel("Share of episodes")
     ax.set_ylim(0, 1.02)
-    ax.legend(frameon=False, fontsize=8, loc="lower left")
+    ax.legend(frameon=False, fontsize=8, loc="upper right")
     _style(ax)
     fig.savefig(path)
     plt.close(fig)

@@ -15,7 +15,8 @@ Barcelona, 2026). Les diferències i millores respecte al TFG s'expliquen a
 > donen l'[Agència Catalana de l'Aigua](https://aca.gencat.cat) i
 > [Protecció Civil de Catalunya](https://interior.gencat.cat/ca/arees_dactuacio/proteccio_civil/).
 
-**Predicció en temps real:** [llobregat-operatiu](https://github.com/joangordo/llobregat-operatiu)
+**Predicció en temps real:** [joangordo.github.io/llobregat-flood-forecast-live](https://joangordo.github.io/llobregat-flood-forecast-live/)
+(codi: [llobregat-flood-forecast-live](https://github.com/joangordo/llobregat-flood-forecast-live))
 (GitHub Actions + GitHub Pages, cada 30 minuts).
 
 El codi, els comentaris i els noms de les sortides són en anglès, igual que a la
