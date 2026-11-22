@@ -1,0 +1,28 @@
+# Data (never in the repository: they have their own terms of use)
+data/
+!configs/
+*.parquet
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Experiments
+mlruns/
+mlartifacts/
+optuna*.db
+
+# Environment and editors
+.env
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+

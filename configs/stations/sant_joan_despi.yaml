@@ -1,0 +1,180 @@
+# Reference station: Llobregat at Sant Joan Despí (ACA LB-60, 4,907.79 km²).
+# Sensors taken from the ACA Sentilo catalogue (uv run llobregat aca catalog).
+# opendata: 5-min codi_variable in the open data portal (flows 1996-2009, 2010-2019, 2020-).
+# opendata_daily: daily series (cabals_diaris since 1951; embassaments_diaris since 2000).
+# Berga: the 5-min series (EA066_C4066) matches the daily "Cabal total" (river + CIB canal).
+# Guardiola: despite the code EA078_C4078, the 5-min series has 27 % zeros (river only, when
+# the canal takes all the water) and does not match the total: the daily "Cabal riu" is used.
+
+station_id: sant_joan_despi
+name: Llobregat a Sant Joan Despí
+target: {provider: AFORAMENT-EST, sensor: CALC001261, opendata: "4652845", opendata_daily: ["4369424"]}
+
+resolution_min: 30
+horizons_h: [1, 3, 6, 12, 24]
+
+thresholds:
+  warning_quantile: 0.99
+  alert_quantile: 0.999
+  warning_m3s: null     # official thresholds, if obtained
+  alert_m3s: null
+
+# Upstream gauges that are candidate inputs (river flow, m³/s).
+# lag_window_h: null -> estimated by cross-correlation.
+upstream:
+  # Main stem (downstream to upstream)
+  - {name: martorell, code: LB-51, area_km2: 4554, aca: {provider: AFORAMENT-EST, sensor: CALC001975, opendata_daily: ["4369418"]},
+     note: "Not in the open data (only EA074, Martorell-Anoia): no history"}
+  - {name: castellbisbal, code: LB-30, area_km2: 3628, aca: {provider: AFORAMENT-EST, sensor: CALC001446, opendata: "4652836", opendata_daily: ["4369411"]}}
+  - {name: castellbell, code: LB-25, area_km2: 3326.85, aca: {provider: AFORAMENT-EST, sensor: CALC001244, opendata: "4652790", opendata_daily: ["4261138"]}}
+  - {name: balsareny, code: LB-15, area_km2: 1022.26, aca: {provider: AFORAMENT-EST, sensor: CALC001230, opendata: "4652787", opendata_daily: ["4261134"]}}
+  - {name: berga_olvan, code: LB-05, area_km2: 565, aca: {provider: AFORAMENT-EST, sensor: CALC001304, opendata: "4652828", opendata_daily: ["4369160"]}}
+  - {name: guardiola, code: LA-10, area_km2: 332.58, aca: {provider: AFORAMENT-EST, sensor: CALC001228, opendata: "4652795", opendata_daily: ["4290751"]}}
+  # Anoia
+  - {name: anoia_martorell, code: LB-50, area_km2: 904, aca: {provider: AFORAMENT-EST, sensor: CALC001836, opendata: "4652861", opendata_daily: ["4369451"]}}
+  - {name: anoia_sant_sadurni, code: LB-45, area_km2: 720.03, aca: {provider: AFORAMENT-EST, sensor: CALC001249, opendata: "4652819", opendata_daily: ["4368233"]}}
+  - {name: carme, code: LB-40, area_km2: 100.1, aca: {provider: AFORAMENT-EST, sensor: CALC001510, opendata: "4652859", opendata_daily: ["4369449"]}}
+  - {name: mediona, code: LB-35, aca: {provider: AFORAMENT-EST, sensor: CALC001266, opendata: "4652863", opendata_daily: ["4369453"]},
+     note: "Riudevitlles-riera de Mediona; the catalogue gives no area"}
+  # Cardener
+  - {name: cardener_suria, code: CB-15, area_km2: 964.13, aca: {provider: AFORAMENT-EST, sensor: CALC001274, opendata: "4652788", opendata_daily: ["4261135"]}}
+  - {name: cardener_cardona, code: CB-10, area_km2: 631, aca: {provider: AFORAMENT-EST, sensor: CALC001241, opendata: "4652832", opendata_daily: ["4369406"]}}
+  # Other tributaries
+  - {name: gavarresa, code: LB-20, area_km2: 452.56, aca: {provider: AFORAMENT-EST, sensor: CALC001237, opendata: "4652843", opendata_daily: ["4369422"]}}
+  - {name: merles, code: LB-10, area_km2: 171.08, aca: {provider: AFORAMENT-EST, sensor: CALC001514, opendata: "4652841", opendata_daily: ["4369420"]}}
+  - {name: rubi, code: LB-53, area_km2: 120, aca: {provider: AFORAMENT-EST, sensor: CALC001256, opendata: "4652857", opendata_daily: ["4369445"]},
+     note: "Limited functionality according to the catalogue"}
+
+# Outflow = virtual gauging station of each dam
+reservoirs:
+  - name: la_baells
+    capacity_hm3: 108.71
+    outflow: {provider: AFORAMENT-EST, sensor: CALC000736, opendata_daily: ["4165139", "4462770"]}
+    volume: {provider: EMBASSAMENT-EST, sensor: CALC000697, opendata: "4657203", opendata_daily: ["Embassament de la Baells (Cercs)"]}
+    level: {provider: EMBASSAMENT-EST, sensor: 082687-001-ANA015, opendata: "4657202"}
+  - name: la_llosa_del_cavall
+    capacity_hm3: 71.56
+    outflow: {provider: AFORAMENT-EST, sensor: CALC000719, opendata_daily: ["4165460"]}
+    volume: {provider: EMBASSAMENT-EST, sensor: CALC000698, opendata: "4657205", opendata_daily: ["Embassament de la Llosa del Cavall (Navès)"]}
+    level: {provider: EMBASSAMENT-EST, sensor: 081419-003-ANA005, opendata: "4657204"}
+  - name: sant_ponc
+    capacity_hm3: 24.41
+    outflow: {provider: AFORAMENT-EST, sensor: CALC000737, opendata_daily: ["4165146"]}   # limited functionality
+    volume: {provider: EMBASSAMENT-EST, sensor: CALC000699, opendata: "4657207", opendata_daily: ["Embassament de Sant Ponç (Clariana de Cardener)"]}
+    level: {provider: EMBASSAMENT-EST, sensor: 250753-004-ANA010, opendata: "4657206"}
+
+# Logged in real time to build up a history, but not model inputs
+log_only:
+  - {provider: AFORAMENT-EST, sensor: 082172-002-ANA010, opendata: "4652846", variable: level, note: "Stage at Sant Joan Despí (LB-60)"}
+  # Headwaters (upstream of the reservoirs)
+  - {provider: AFORAMENT-EST, sensor: CALC001223, opendata: "4652829", opendata_daily: ["4369171"], variable: flow, note: "LA-05 Llobregat a Castellar de n'Hug"}
+  - {provider: AFORAMENT-EST, sensor: CALC001669, opendata_daily: ["4369415"], variable: flow, note: "LA-15 riera de Peguera (Cercs)"}
+  - {provider: AFORAMENT-EST, sensor: CALC001622, opendata: "4652847", opendata_daily: ["4369430"], variable: flow, note: "LA-20 riu Merdançol (Vilada)"}
+  - {provider: AFORAMENT-EST, sensor: CALC001627, opendata: "4652849", opendata_daily: ["4369432"], variable: flow, note: "LA-25 Vilada"}
+  - {provider: AFORAMENT-EST, sensor: CALC001632, opendata: "4652865", opendata_daily: ["4372679"], variable: flow, note: "CA-05 Cardener al Monegal (Guixers)"}
+  - {provider: AFORAMENT-EST, sensor: CALC001532, opendata: "4652834", opendata_daily: ["4369407"], variable: flow, note: "CA-10 riera Aigua de Valls (Guixers)"}
+  - {provider: AFORAMENT-EST, sensor: CALC001550, opendata: "4652854", opendata_daily: ["4369441"], variable: flow, note: "CB-05 riera d'Aiguadora (Navès)"}
+  # ACA rain gauges in the basin (mm/h, real time only)
+  - {provider: PLUVIOMETREACA-EST, sensor: 080522-006-ANA007, variable: rain_intensity, note: "Castellar de n'Hug"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 082687-001-ANA016, variable: rain_intensity, note: "Cercs (la Baells)"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 080996-007-ANA009, variable: rain_intensity, note: "Guardiola de Berguedà"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 081918-009-ANA002, variable: rain_intensity, note: "Artés (Gavarresa)"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 251116-004-ANA04, variable: rain_intensity, note: "Guixers (Aigua de Valls)"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 251462-001-ANA04, variable: rain_intensity, note: "Navès (Aiguadora)"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 081419-003-ANA006, variable: rain_intensity, note: "Navès (la Llosa del Cavall)"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 250753-004-ANA011, variable: rain_intensity, note: "Clariana (Sant Ponç)"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 080478-006-ANA004, variable: rain_intensity, note: "Cardona"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 082747-007-ANA003, variable: rain_intensity, note: "Súria"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 082401-002-ANA002, variable: rain_intensity, note: "Sant Sadurní d'Anoia"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 082362-002-ANA03, variable: rain_intensity, note: "Sant Quintí de Mediona"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 080538-005-ANA003, variable: rain_intensity, note: "Castellbell i el Vilar"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 080018-005-ANA016, variable: rain_intensity, note: "Abrera (ETAP)"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 081580-002-ANA008, variable: rain_intensity, note: "el Papiol (riera de Rubí)"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 082634-001-ANA017, variable: rain_intensity, note: "Sant Vicenç dels Horts"}
+  - {provider: PLUVIOMETREACA-EST, sensor: 082172-002-ANA014, variable: rain_intensity, note: "Sant Joan Despí (ETAP)"}
+
+rain:
+  # XEMA stations of stations_candidates.csv with use = 1. ZD (Tosa d'Alp) has no
+  # precipitation; Z8 and WY are spliced with ZE and YO.
+  xema_stations: [MS, WV, UI, WM, CR, MV, MW, XT, MQ, U4, WW, CL, VU, WN, D2, H1, CE, XC,
+                  YO, D3, ZE, VO, V5, CY, VP, YH, XA, YK, XV, WP, XB, XL]
+  splices: {ZE: Z8, YO: WY}
+  hourly_policy: split
+  # ACA rain gauges with history (aca-rain). Discarded because the series is too short or
+  # incomplete: EA002, P002, P010 (since 2026) and EA063 (10 % coverage)
+  aca_gauges: [E14, EA078, EA086, EA098, E12, E13, EA068, EA077, EA039, C4007, C4076a,
+               EA049, EA084]
+  # Real-time (Sentilo) sensor of each rain gauge used by the model, matched by site with
+  # `llobregat aca rain-map` (the sites are those of the log_only rain gauges above)
+  aca_realtime:
+    E14: {provider: PLUVIOMETREACA-EST, sensor: 082687-001-ANA016}    # Cercs (la Baells)
+    EA078: {provider: PLUVIOMETREACA-EST, sensor: 080996-007-ANA009}  # Guardiola de Berguedà
+    E12: {provider: PLUVIOMETREACA-EST, sensor: 081419-003-ANA006}    # Navès (la Llosa del Cavall)
+    E13: {provider: PLUVIOMETREACA-EST, sensor: 250753-004-ANA011}    # Clariana (Sant Ponç)
+    EA068: {provider: PLUVIOMETREACA-EST, sensor: 082747-007-ANA003}  # Súria
+    EA039: {provider: PLUVIOMETREACA-EST, sensor: 082362-002-ANA03}   # Sant Quintí de Mediona
+    C4007: {provider: PLUVIOMETREACA-EST, sensor: 082634-001-ANA017}  # Sant Vicenç dels Horts
+    EA049: {provider: PLUVIOMETREACA-EST, sensor: 082172-002-ANA014}  # Sant Joan Despí (ETAP)
+    EA084: {provider: PLUVIOMETREACA-EST, sensor: 080018-005-ANA016}  # Abrera (ETAP)
+  # Grouping into ACA sub-basins
+  subbasins:
+    # XEMA codes (2 characters) and ACA rain gauges (EA..., E1x, C40...). The ACA gauges
+    # were assigned by site name: Cercs (Baells), Guardiola, Castellar (upper Llobregat);
+    # Navès (Llosa), Clariana (Sant Ponç), Súria, Guixers (Cardener); Sallent (middle
+    # Llobregat); Sant Quintí de Mediona (Anoia); Sant Vicenç, Sant Joan Despí, Abrera
+    # (lower Llobregat); el Papiol (riera de Rubí).
+    alt_llobregat: [MS, WV, UI, WM, CR, E14, EA078, EA086]
+    cardener: [ZE, MV, MW, XT, MQ, VO, VP, E12, E13, EA068, EA098]
+    llobregat_mitja: [U4, WW, CL, V5, CY, EA077]
+    anoia: [H1, YO, YH, XA, WP, XB, EA039]
+    baix_llobregat: [VU, WN, D2, CE, XC, D3, XL, C4007, EA049, EA084]
+    riera_de_rubi: [YK, XV, C4076a]
+  windows_h: [0.5, 1, 3, 6, 12, 24, 72]
+
+antecedent_kd: [0.85, 0.90, 0.95]
+target_transforms: [level, delta, log_ratio, log_level]
+
+qc:
+  min_value: 0.0
+  max_value: 5000.0     # provisional
+  flatline_intervals: 12
+  max_jump: null        # provisional
+  short_gap_intervals: 6
+  # Stretches discarded by hand after review with qc-event
+  exclusions:
+    - {series: "4652859", start: "2009-12-12", end: "2009-12-23",
+       reason: "Riera de Carme: almost constant 140-180 m³/s for days with interleaved readings of 1 or 0.05 (faulty sensor; the official daily series derives from it)"}
+    - {series: "4652829", start: "2019-12-22 22:45", end: "2019-12-23 23:59",
+       reason: "Castellar de n'Hug: jump to 568 m³/s and sustained 104 m³/s while the official daily flow is 5-6 m³/s"}
+
+validation:
+  hydro_year_start_month: 10
+  n_outer_folds: 5
+  holdout_years: 2
+  inner_val_years: 2
+  calibration_years: 1
+  gap_days: 7
+
+intervals:
+  alpha: 0.2
+  quantiles: [0.1, 0.5, 0.9]
+  aci_gamma: 0.005
+  mondrian_min_n: 100
+
+# Two variants compared on the same test years:
+#  - long: more history (26 years, all the large floods) and fewer stations
+#  - full: all stations, but only since 2018
+# Every series with at least min_coverage of data in the period is an input (llobregat splits).
+variants:
+  - name: long
+    description: "Since 2000 with the stations that have a complete series"
+    train_start: "2000-10-01"
+    min_coverage: 0.85
+    validation: {n_outer_folds: 5}
+  - name: full
+    description: "Since 2018 with all the stations"
+    train_start: "2018-10-01"
+    min_coverage: 0.85
+    validation: {n_outer_folds: 2, inner_val_years: 1}
+
+model_release: null
